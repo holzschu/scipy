@@ -106,8 +106,12 @@ def set_cxx_flags_hook(build_ext, ext):
         args.append(std_flag)
 
     if sys.platform == 'darwin':
-        # Set min macOS version
-        min_macos_flag = '-mmacosx-version-min=10.9'
+        platform = os.getenv('PLATFORM') or 'macosx'
+        if platform.startswith('iphone'):
+            min_macos_flag = '-miphoneos-version-min=14.0'
+        else:
+            # Set min macOS version
+            min_macos_flag = '-mmacosx-version-min=10.9'
         if has_flag(cc, min_macos_flag):
             args.append(min_macos_flag)
             ext.extra_link_args.append(min_macos_flag)
@@ -123,8 +127,12 @@ def set_cxx_flags_clib_hook(build_clib, build_info):
         new_args.append(std_flag)
 
     if sys.platform == 'darwin':
-        # Set min macOS version
-        min_macos_flag = '-mmacosx-version-min=10.9'
+        platform = os.getenv('PLATFORM') or 'macosx'
+        if platform.startswith('iphone'):
+            min_macos_flag = '-miphoneos-version-min=14.0'
+        else:
+            # Set min macOS version
+            min_macos_flag = '-mmacosx-version-min=10.9'
         if has_flag(cc, min_macos_flag):
             new_args.append(min_macos_flag)
             new_link_args.append(min_macos_flag)

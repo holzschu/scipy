@@ -499,7 +499,9 @@ def configuration(parent_package='', top_path=None):
     from scipy._build_utils.system_info import get_info, NotFoundError
     from numpy.distutils.misc_util import Configuration
 
+    print("Calling get_info: ", get_info)
     lapack_opt = get_info('lapack_opt')
+    print("After get_info, lapack_opt: ", lapack_opt)
 
     if not lapack_opt:
         if sys.platform == "darwin":
@@ -553,11 +555,13 @@ def setup_package():
         license='BSD',
         cmdclass=cmdclass,
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
-        platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
+        platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix", "iOS"],
         test_suite='nose.collector',
         install_requires=[
-            'numpy>=1.16.5',
+           'numpy>=1.16.5',
         ],
+        # iOS: don't create a Zip archive when installing:
+        zip_safe=False,        
         python_requires='>=3.7',
     )
 
@@ -589,6 +593,8 @@ def setup_package():
             generate_cython()
 
         metadata['configuration'] = configuration
+        # iOS / OSX: enforce version number to avoid a 0.0.0
+        metadata['version'] = get_version_info()[0]
     else:
         # Don't import numpy here - non-build actions are required to succeed
         # without NumPy for example when pip is used to install Scipy when
@@ -597,6 +603,7 @@ def setup_package():
         # Version number is added to metadata inside configuration() if build
         # is run.
         metadata['version'] = get_version_info()[0]
+        print("metadata version = ", metadata['version'])
 
     setup(**metadata)
 

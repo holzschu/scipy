@@ -61,11 +61,13 @@ if _pep440.parse(np.__version__) >= _pep440.Version("1.15.0.dev"):
     # For new enough numpy.distutils, the ACCELERATE=None environment
     # variable in the top-level setup.py is enough, so no need to
     # customize BLAS detection.
+    print("We are in the modern numpy, get_info = old_get_info")
     get_info = old_get_info
 else:
     # For NumPy < 1.15.0, we need overrides.
 
     def get_info(name, notfound_action=0):
+        print("old numpy: ", np.__version__)
         # Special case our custom *_opt_info.
         cls = {'lapack_opt': lapack_opt_info,
                'blas_opt': blas_opt_info}.get(name.lower())
