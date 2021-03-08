@@ -670,7 +670,6 @@ size_error:
     return -1;
 }
 
-
 PyObject *newSuperLUObject(SuperMatrix * A, PyObject * option_dict,
                            int intype, int ilu, PyObject * py_csc_construct_func)
 {
@@ -686,7 +685,11 @@ PyObject *newSuperLUObject(SuperMatrix * A, PyObject * option_dict,
     volatile SuperLUStat_t stat = { 0 };
     volatile int panel_size, relax;
     volatile GlobalLU_t Glu;
+#if !TARGET_OS_IPHONE
     static volatile GlobalLU_t static_Glu;
+#else 
+    static __thread volatile GlobalLU_t static_Glu;
+#endif
     volatile GlobalLU_t *Glu_ptr;
     volatile jmp_buf *jmpbuf_ptr;
     SLU_BEGIN_THREADS_DEF;
